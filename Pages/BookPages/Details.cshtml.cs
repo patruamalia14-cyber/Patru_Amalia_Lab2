@@ -3,38 +3,41 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Patru_Amalia_Lab2.Models;
 
-namespace Patru_Amalia_Lab2.Pages.BookPages;
-
-public class DetailsModel : PageModel
+namespace Patru_Amalia_Lab2.Pages.BookPages
 {
-    private readonly Patru_Amalia_Lab2Context _context;
-    public DetailsModel(Patru_Amalia_Lab2Context context)
+    public class DetailsModel : PageModel
     {
-        _context = context;
-    }
+        private readonly Patru_Amalia_Lab2Context _context;
 
-    public Book Book { get; set; } = default!;
-
-    public async Task<IActionResult> OnGetAsync(int? id)
-    {
-        if (id is null)
+        public DetailsModel(Patru_Amalia_Lab2Context context)
         {
-            return NotFound();
+            _context = context;
         }
 
-        var book = await _context.Book
-      .Include(b => b.Publisher)
-      .Include(b => b.Author)
-      .FirstOrDefaultAsync(m => m.ID == id);
-        if (book is null)
+        public Book Book { get; set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
-            return NotFound();
-        }
-        else
-        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var book = await _context.Book
+                .Include(b => b.Author)
+                .Include(b => b.Publisher)
+                .Include(b => b.BookCategories)
+                    .ThenInclude(b => b.Category)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
             Book = book;
+            return Page();
         }
-
-        return Page();
     }
 }
