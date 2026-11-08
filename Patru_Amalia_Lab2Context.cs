@@ -5,6 +5,8 @@ namespace Patru_Amalia_Lab2.Data
 {
     public class Patru_Amalia_Lab2Context : DbContext
     {
+        public DbSet<Patru_Amalia_Lab2.Models.Borrowing> Borrowing { get; set; } = default!;
+        public DbSet<Patru_Amalia_Lab2.Models.Member> Member { get; set; } = default!;
         public Patru_Amalia_Lab2Context(DbContextOptions<Patru_Amalia_Lab2Context> options)
             : base(options)
         {
